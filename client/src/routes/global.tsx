@@ -1,9 +1,15 @@
-import { Navbar } from "../components/UI/Navbar";
+import { NavLink } from "../components/UI/Navbar";
+import { Home } from "../pages/Home";
 
 const rootRoute = {
   path: "/",
-  element: <Navbar />,
-  errorElement: <p>Se chavó esto :/</p>
+  element: <Home />,
+  // errorElement: <p>Se chavó esto :/</p>
 };
 
-export const globalRoutes = [rootRoute];
+const exercisesRoutes = {
+  path: "/exercises",
+  element: <p>Exercises, <NavLink text="Home" path="/" /></p>
+}
+
+export const globalRoutes = [rootRoute, exercisesRoutes];
