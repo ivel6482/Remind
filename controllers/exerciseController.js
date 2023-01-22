@@ -6,19 +6,35 @@ module.exports = {
     getIndex: (req, res) => {
         res.render("index.ejs");
     },
+    getLatestExercise: async (req, res) => {
+        try {
+            const latestExercise =
+                await Exercise
+                    .find()
+                    .sort({ createdAt: "desc" })
+                    .limit(1)
+                    .lean();
+
+            const withThumbnail = generateExerciseVideoThumbnail(latestExercise);
+
+            res.json(withThumbnail[0]);
+        } catch (error) {
+            res.status(500).json("Error getting latest exercise");
+        }
+    },
     getExercise: async (req, res) => {
         try {
             //find exercises that user posted
-            const exercises = await Exercise.find({user:req.user.id});
-           //Generate thumbnail
+            const exercises = await Exercise.find({ user: req.user.id });
+            //Generate thumbnail
             const exercisesWithThumbnails = generateExerciseVideoThumbnail(exercises);
             //for conditional in EJS
             const noExercises = exercises.length === 0;
 
             res.render('posts', { title: "Remind Exercise - Home", exercises: exercises, noExercises, exercisesWithThumbnails, user: req.user })
-            } catch (error) {
-                console.error(error);
-                res.render("error", { message: error.message });
+        } catch (error) {
+            console.error(error);
+            res.render("error", { message: error.message });
         }
     },
     markFavorite: async (req, res) => {
@@ -29,8 +45,8 @@ module.exports = {
             const exercise = await Exercise.findById(videoId);
 
             let arr = exercise.favoritesBy
-                    //push's user id to exercise collection 
-                arr.push(userId)
+            //push's user id to exercise collection 
+            arr.push(userId)
 
             await exercise.save()
 
@@ -73,9 +89,9 @@ module.exports = {
             const exercise = await Exercise.findById(videoId);
 
             let arr = exercise.completedBy
-             //push's user id to exercise collection 
+            //push's user id to exercise collection 
             arr.push(userId)
-                  //saves to DB
+            //saves to DB
             await exercise.save()
 
             console.log(`${userId} completed ${videoId}`)
@@ -110,7 +126,7 @@ module.exports = {
             // Querying the database to find all the exercises the user marked as favorite. 
             // Checking if the current logged in userid is in the exercise's favoritesBy array. 
             // https://www.mongodb.com/docs/manual/reference/operator/query/elemMatch/
-            const favoriteExercises = await Exercise.find({favoritesBy: {$elemMatch : {$eq: req.user.id}}});
+            const favoriteExercises = await Exercise.find({ favoritesBy: { $elemMatch: { $eq: req.user.id } } });
 
             const favoritesWithThumbnails = generateExerciseVideoThumbnail(favoriteExercises);
 
@@ -126,7 +142,7 @@ module.exports = {
             // Querying the database to find all the exercises the user marked as favorite. 
             // Checking if the current logged in userid is in the exercise's favoritesBy array. 
             // https://www.mongodb.com/docs/manual/reference/operator/query/elemMatch/
-            const completeExercises = await Exercise.find({completedBy: {$elemMatch : {$eq: req.user.id}}});
+            const completeExercises = await Exercise.find({ completedBy: { $elemMatch: { $eq: req.user.id } } });
 
             const completedWithThumbnails = generateExerciseVideoThumbnail(completeExercises);
 
@@ -140,7 +156,7 @@ module.exports = {
     exerciseDetails: async (req, res) => {
         try {
             //check Exercise collection in database for ID and assign it to variable
-            const exercise = await Exercise.findById(req.params.id); 
+            const exercise = await Exercise.findById(req.params.id);
 
             const embedVideoUrl = exercise.videoURL.replace("watch?v=", "embed/");
             exercise.videoURL = embedVideoUrl;
@@ -153,7 +169,7 @@ module.exports = {
     exercisesPage: async (req, res) => {
         try {
             //find all exercises and sort newest ontop
-            const exercises = await Exercise.find({}).sort({createdAt: "desc"});
+            const exercises = await Exercise.find({}).sort({ createdAt: "desc" });
 
 
             const exercisesWithThumbnails = generateExerciseVideoThumbnail(exercises);
@@ -181,7 +197,7 @@ module.exports = {
                 description
             } = req.body;
             //add user to variable
-            let user =  req.user.id
+            let user = req.user.id
 
             videoURL = videoURL.split('&')[0]
 
@@ -213,14 +229,14 @@ module.exports = {
     },
     deletePost: async (req, res) => {
         try {
-          // Delete post from db
-          await Exercise.deleteOne({ _id: req.params.id });
-         
-          console.log("Deleted Post");
-          res.redirect("/exercises");
+            // Delete post from db
+            await Exercise.deleteOne({ _id: req.params.id });
+
+            console.log("Deleted Post");
+            res.redirect("/exercises");
         } catch (err) {
-          res.redirect("/exercises");
+            res.redirect("/exercises");
         }
-      },
+    },
 };
 
