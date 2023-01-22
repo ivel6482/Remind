@@ -1,6 +1,15 @@
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import { Navbar } from "./components/UI/Navbar";
+
+
+const router = createBrowserRouter([{
+  path: "/",
+  element: <Navbar />
+}]);
+
 function App() {
   return (
-    <h1 className="font-bold text-7xl text-rose-400">Remind</h1>
+    <RouterProvider router={router} />
   )
 }
 
