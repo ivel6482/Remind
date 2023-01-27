@@ -6,9 +6,7 @@ export function useLatestExercise() {
     queryKey: ["latestExercise"],
     queryFn: () => {
       return axios.get("http://localhost:8000/exercises/latest");
-    },
-    keepPreviousData: true,
-    staleTime: 5 * 60 * 1_000
+    }
   });
 
   return query;

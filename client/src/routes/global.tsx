@@ -1,4 +1,6 @@
+import { RouteObject } from "react-router-dom";
 import { NavLink } from "../components/UI/Navbar";
+import { ExerciseDetail } from "../pages/ExerciseDetail";
 import { Home } from "../pages/Home";
 
 const rootRoute = {
@@ -7,9 +9,14 @@ const rootRoute = {
   // errorElement: <p>Se chavó esto :/</p>
 };
 
-const exercisesRoutes = {
+const exercisesRoutes: RouteObject = {
   path: "/exercises",
-  element: <p>Exercises, <NavLink text="Home" path="/" /></p>
-}
+  element: <p>Exercises, <NavLink text="Home" path="/" /></p>,
+};
 
-export const globalRoutes = [rootRoute, exercisesRoutes];
+const exerciseDetailRoute: RouteObject = {
+  path: "/exercises/:exerciseId",
+  element: <ExerciseDetail />
+};
+
+export const globalRoutes = [rootRoute, exercisesRoutes, exerciseDetailRoute];

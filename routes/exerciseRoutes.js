@@ -16,7 +16,7 @@ router.get('/exercises', ensureAuth, exerciseController.exercisesPage)
 router.get('/exercises/favorites', ensureAuth, exerciseController.favoritesPage)
 router.get('/exercises/completed', ensureAuth, exerciseController.completedPage)
 router.get('/exercises/new', ensureAuth, exerciseController.addExercisePage)
-router.get('/exercises/:id', ensureAuth, exerciseController.exerciseDetails)
+router.get('/exercises/:id', exerciseController.exerciseDetails)
 router.delete("/exercises/deletePost/:id", exerciseController.deletePost);
 
 module.exports = router

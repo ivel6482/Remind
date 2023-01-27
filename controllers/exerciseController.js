@@ -161,7 +161,7 @@ module.exports = {
             const embedVideoUrl = exercise.videoURL.replace("watch?v=", "embed/");
             exercise.videoURL = embedVideoUrl;
 
-            res.render("exercise", { exercise, user: req.user });
+            res.json(exercise);
         } catch (error) {
             console.error(error);
         }
