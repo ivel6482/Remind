@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { remindApi } from "../main";
 
 export function useLatestExercise() {
   const query = useQuery({
     queryKey: ["latestExercise"],
     queryFn: () => {
-      return axios.get("http://localhost:8000/exercises/latest");
+      return remindApi.get("/exercises/latest");
     }
   });
 
