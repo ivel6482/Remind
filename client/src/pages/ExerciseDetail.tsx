@@ -7,10 +7,10 @@ export function ExerciseDetail() {
   const query = useExerciseDetails(exerciseId);
 
   return (
-    <>
+    <section>
       <h1>Exercise Detail Page</h1>
       <p>{query.data?.data.title}</p>
       <Link to="/">Home</Link>
-    </>
+    </section>
   )
 };

@@ -74,9 +74,8 @@ module.exports = {
       validationErrors.push({ msg: "Passwords do not match" });
 
     if (validationErrors.length) {
-      req.flash("errors", validationErrors);
-      console.log(validationErrors)
-      return res.redirect("/auth/signup");
+      console.log(validationErrors);
+      return res.status(400).json(validationErrors)
     }
     req.body.email = validator.normalizeEmail(req.body.email, {
       gmail_remove_dots: false,
@@ -92,23 +91,28 @@ module.exports = {
       { $or: [{ email: req.body.email }, { userName: req.body.userName }] },
       (err, existingUser) => {
         if (err) {
+          res.status(400).json(err);
           return next(err);
         }
         if (existingUser) {
-          req.flash("errors", {
-            msg: "Account with that email address or username already exists.",
-          });
-          return res.redirect("/auth/signup");
+          return res.status(400).json(
+            {
+              msg: "Account with that email address or username already exists.",
+            }
+          );
         }
         user.save((err) => {
           if (err) {
+            res.status(400).json(err);
             return next(err);
           }
           req.logIn(user, (err) => {
             if (err) {
+              res.status(400).json(err);
               return next(err);
             }
-            res.redirect("/");
+
+            res.json({ success: true });
           });
         });
       }
